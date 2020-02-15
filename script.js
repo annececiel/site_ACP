@@ -34,21 +34,6 @@ $(document).ready(function(){
       $("#myCarousel").carousel("next");
     });
   });
-/*
-$('#submit').click(function(e){
-  e.preventDefault(); // on empêche le bouton d'envoyer le formulaire
 
-  var name = encodeURIComponent( $('#name').val() ); // on sécurise les données
-  var msg = encodeURIComponent( $('#msg').val() );
 
-  if(name != "" && msg != ""){ // on vérifie que les variables ne sont pas vides
-      $.ajax({
-          url : "includes/form.php", // on donne l'URL du fichier de traitement
-          type : "POST", // la requête est de type POST
-          data : "name=" + name + "&msg=" + msg // et on envoie nos données
-      });
-
-     $('#msg').append("<p>" + name + " dit : " + msg + "</p>"); // on ajoute le message dans la zone prévue
-  }
-});*/
 
