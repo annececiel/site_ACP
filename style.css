@@ -20,7 +20,7 @@ body{
   }
   h3{
    text-align: center;
-   color: #E8F3F1;
+   color: #b5dcd6;
    text-transform: uppercase;
   }
   h4{
@@ -76,6 +76,9 @@ body{
     height: auto;
     padding: 0;
     overflow: hidden;
+  }
+  .container.slider-wrapper h3{
+    color:#E8F3F1;
   }
   .carousel-inner, .item.active{
     max-height: 35em;
