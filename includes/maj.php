@@ -1,45 +1,61 @@
 <?php
-// connexion à la base
-try
-{
-    $bdd = new PDO('mysql:host=localhost;dbname=messages; charset=utf8', 'root', '');
-}
-catch (Exception $e)
-{
-    die('Erreur : ' . $e->getMessage());
+require_once __DIR__."/recaptchalib.php";
+
+// Register API keys at https://www.google.com/recaptcha/admin
+
+function checkPostParamas(){
+
+  $errors = array();
+  if(!isset($_POST['email']) || empty($_POST['email'])){
+    $errors[] = "Email obligatoire";
+  }
+  if(isset($_POST['g-recaptcha-response'])) {
+    $siteKey = "6LeX7dgUAAAAAH45FOsvF68SPqGkaoxMqp4HkcMN";
+    $secret = "6LeX7dgUAAAAAH3XMOlQPY59VqicxLp-kDN708JW";
+    
+    // The response from reCAPTCHA
+    $resp = null;
+    // The error code from reCAPTCHA, if any
+    $error = null;
+    $reCaptcha = new ReCaptcha($secret);
+
+    $resp = $reCaptcha->verifyResponse(
+      $_SERVER['REMOTE_ADDR'],
+        $_POST["g-recaptcha-response"]
+    );
+    if(!$resp || !$resp->success){
+      $errors[]="Captcha invalide";
+    }
+  }else{
+    $errors[]="Captcha invalide";
+  }
+  return $errors;
 }
 
-// recuperation des valeurs du formulaire
 $name = $_POST['name'];
 $firstname = $_POST['firstname'];
 $email = $_POST['email'];
 $msg = $_POST['msg'];
 $ip = $_SERVER['REMOTE_ADDR'];
 
-
-/*function getIp(){
-    if(!empty($_SERVER['HTTP_CLIENT_IP'])){
-      $ip = $_SERVER['HTTP_CLIENT_IP'];
-    }elseif(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){
-      $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-    }else{
-      $ip = $_SERVER['REMOTE_ADDR'];
-    }
-    return $ip;
+if(empty($errors = checkPostParamas())){
+  try
+  {
+      $bdd = new PDO('mysql:host=localhost;dbname=messages; charset=utf8', 'root', '');
   }
-  echo 'L adresse IP de l\'utilisateur est : '.getIp();*/
-//  echo $_SERVER['REMOTE_ADDR'];
-
-// insertion des valeurs dans la base
-
-$req = $bdd->prepare('INSERT INTO messages (name, firstname, email, msg, date_msg) VALUES(?,?,?,?,NOW())');
-$req->execute(array($_POST['name'],$_POST['firstname'],$_POST['email'],$_POST['msg']));
-
-//ajouter l'adresse ip de l'utilisateur à la bdd
-$query='INSERT INTO messages (ip) VALUES($ip)';
-
-// Redirection du visiteur vers la page de confirmation
+  catch (Exception $e)
+  {
+      die('Erreur : ' . $e->getMessage());
+  }
+  $req = $bdd->prepare('INSERT INTO messages (name, firstname, email, msg, date_msg, ip) VALUES(?,?,?,?,NOW(), ?)');
+//$req->execute(array($_POST['name'],$_POST['firstname'],$_POST['email'],$_POST['msg']));
+$messageID = $req->execute(array($name, $firstname,$email,$msg, $ip));
 header('Location:http://localhost/site_ACP/index.php?page=page2bis');
-//echo ("Maj ok");
-?>
 
+  
+}else{
+session_start();
+$_SESSION['errors'] = $errors;
+header('Location:http://localhost/site_ACP/index.php?page=page2');
+
+}

@@ -1,10 +1,27 @@
+<?php require_once "/recaptchalib.php";
+error_reporting(E_ALL ^ E_NOTICE); 
+session_start();
+$errors = $_SESSION['errors'];
+unset($_SESSION['errors']);
+
+?>
+
 <section>
     <h2>Keep in touch?</h2>
     <h3>Contactez-nous par email</h3>
 
     <div class="container">
-        <form role="form" method="POST" action="includes/maj.php">
+        <form role="form" method="POST" id="form" action="includes/maj.php">
         <!--<form role="form" method="POST" action="index.php?page=confirmation">-->
+            <?php 
+            if($errors && !empty($errors)){
+                foreach($errors as $error){
+                    ?>
+                    <div class="alert alert-danger" role="alert"><?=$error?></div>
+                    <?php
+                }
+            }
+            ?>
             <div class="form-group">
                 <label for="name">Nom</label>
                 <input type="text" class="form-control" name="name" id="name" placeHolder="Votre nom">
@@ -29,10 +46,27 @@
             <div class="primary">
                 <p><span class="glyphicon glyphicon-asterisk"> Champs obligatoires, merci!</p>
             </div>
+
+            <!-- reCAPTHA -->
+            <div class="g-recaptcha" data-sitekey="6LeX7dgUAAAAAH45FOsvF68SPqGkaoxMqp4HkcMN" id="capt" required></div>
+
+
             <div class="text-center">
-                <button type="submit" value="submit" id="submit" class="btn btn-primary btn-lg">Envoyer</button>
+                <button type="submit" value="submitmsg" id="submitmsg" class="btn btn-primary btn-lg">Envoyer le message</button>
             </div>
-        </form>
-        
+        </form>       
 </section>
+
+
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+    async defer>
+</script>
+<script type="text/javascript">
+      var onloadCallback = function() {
+        grecaptcha.render('capt', {
+          'sitekey' : '6LeX7dgUAAAAAH45FOsvF68SPqGkaoxMqp4HkcMN'
+        });
+      };
+</script>
+
 
