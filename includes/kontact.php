@@ -12,7 +12,6 @@ unset($_SESSION['errors']);
 
     <div class="container">
         <form role="form" method="POST" id="form" action="includes/maj.php">
-        <!--<form role="form" method="POST" action="index.php?page=confirmation">-->
             <?php 
             if($errors && !empty($errors)){
                 foreach($errors as $error){
