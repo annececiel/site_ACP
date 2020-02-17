@@ -48,9 +48,8 @@ if(empty($errors = checkPostParamas())){
       die('Erreur : ' . $e->getMessage());
   }
   $req = $bdd->prepare('INSERT INTO messages (name, firstname, email, msg, date_msg, ip) VALUES(?,?,?,?,NOW(), ?)');
-//$req->execute(array($_POST['name'],$_POST['firstname'],$_POST['email'],$_POST['msg']));
-$messageID = $req->execute(array($name, $firstname,$email,$msg, $ip));
-header('Location:http://localhost/site_ACP/index.php?page=page2bis');
+  $messageID = $req->execute(array($name, $firstname,$email,$msg, $ip));
+  header('Location:http://localhost/site_ACP/index.php?page=page2bis');
 
   
 }else{
